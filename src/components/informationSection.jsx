@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/barbershopLogo.jpg";
 import { fetchAllOpenHours } from "../services/managmentService";
 
@@ -12,11 +12,10 @@ function InformationSection() {
         const fetcher = new fetchAllOpenHours();
         const response = await fetcher.get();
         setDays(response.data.days);
-        setLoading(false); 
-        console.log(response.data.days)
+        setLoading(false);
       } catch (err) {
         console.log(err);
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -24,25 +23,22 @@ function InformationSection() {
   }, []);
 
   return (
-    <div className="content">
-      {loading ? ( // Display loading message or spinner while loading
+    <div className="content ">
+      {loading ? (
         <p>Loading...</p>
       ) : (
-        // Display data once loaded
         <>
           <img src={logo} alt="barber_shop_logo" className="w-96 h-72" />
           <span className="flex flex-col gap-1 mt-2">
             <h2>Barber Shop - Jan Kowalski</h2>
             <h2>ul. Fabryczna 20 00-100, Wrocław</h2>
           </span>
-          <h1 className="text-xl font-semibold mb-3 mt-3 border-b">
-            Kontakt
-          </h1>
+          <h1 className="text-xl font-semibold mb-3 mt-3 border-b">Kontakt</h1>
 
           <div className="phone-contact flex gap-2 justify-between items-center">
             <span className="flex gap-2">
               <i className="bi bi-telephone-fill text-xl"></i>
-              <p className="text-xl">534 166 602</p>
+              <p className="text-lg whitespace-nowrap ">534 166 602</p>
             </span>
             <button className="h-10 border flex items-center">Zadzwoń</button>
           </div>
@@ -62,17 +58,38 @@ function InformationSection() {
           </div>
 
           <div className="social-media mt-5 flex justify-around">
-            <span className="flex flex-col items-center">
-              <i className="bi bi-facebook text-4xl"> </i>
-              <p className="text-sm">Facebook</p>
+            <span>
+              <a
+                className="flex flex-col items-center  hover:text-zinc-500 hover:cursor-pointer text-black"
+                href="https://facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bi bi-facebook text-4xl"> </i>
+                <p className="text-sm">Facebook</p>
+              </a>
             </span>
-            <span className="flex flex-col items-center">
-              <i className="bi bi-instagram  text-4xl"></i>
-              <p className="text-sm">Instagram</p>
+            <span>
+              <a
+                className="flex flex-col items-center hover:text-zinc-500 hover:cursor-pointer text-black"
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bi bi-instagram text-4xl"></i>
+                <p className="text-sm">Instagram</p>
+              </a>
             </span>
-            <span className="flex flex-col items-center">
-              <i className="bi bi-globe  text-4xl"></i>
-              <p className="text-sm">Strona</p>
+            <span>
+              <a
+                className="flex flex-col items-center  hover:text-zinc-500 hover:cursor-pointer text-black"
+                href="https://example.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="bi bi-globe text-4xl"></i>
+                <p className="text-sm">Strona</p>
+              </a>
             </span>
           </div>
         </>
