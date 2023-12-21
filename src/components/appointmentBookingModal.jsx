@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchAvailableHours } from "../services/eventService";
 
 function AppointmentBookingModal({
   closeModal,
@@ -12,6 +13,27 @@ function AppointmentBookingModal({
   const [email, setEmail] = useState("");
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [availableHours, setAvailableHours] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dateToFetch = selectedDate;
+        dateToFetch.setHours(0, 0, 0, 0);
+        const fetcher = new fetchAvailableHours();
+        const response = await fetcher.get({ date: dateToFetch });
+
+        console.log(response.data);
+        setAvailableHours(response.data);
+        console.log(selectedDate.toDateString());
+      } catch (error) {
+        console.error("Błąd podczas pobierania dostępnych godzin: ", error);
+        console.log(selectedDate);
+      }
+    };
+
+    fetchData();
+  }, [selectedDate, setAvailableHours]);
 
   const handleDateChange = (direction) => {
     const newDate = new Date(selectedDate);
@@ -59,7 +81,10 @@ function AppointmentBookingModal({
     <div className="blur-background fixed top-0 left-0 w-full h-full backdrop-blur-md">
       <div className="modal-overlay fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full lg:w-2/4 bg-white p-5 md:p-8  rounded-md shadow-lg flex flex-col items-center">
         <div className="flex flex-col justify-between items-center w-full">
-          <i className="bi bi-x self-end text-4xl hover:cursor-pointer" onClick={closeModal}></i>
+          <i
+            className="bi bi-x self-end text-4xl hover:cursor-pointer"
+            onClick={closeModal}
+          ></i>
           <h2 className="text-xl font-semibold">Zarezerwuj wizytę</h2>
         </div>
         <span className="dayName text-lg mt-3">
@@ -79,8 +104,8 @@ function AppointmentBookingModal({
             id="date"
             name="date"
             value={selectedDate.toISOString().slice(0, 10)}
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
             min={today.toISOString().slice(0, 10)}
+            onChange={(e) => setSelectedDate(new Date(e.target.value))}
             required
           />
           <i
@@ -113,7 +138,7 @@ function AppointmentBookingModal({
               }`}
               type="text"
               id="name"
-              name="name" 
+              name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
