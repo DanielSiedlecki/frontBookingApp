@@ -14,6 +14,9 @@ function AppointmentBookingModal({
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [availableHours, setAvailableHours] = useState(null);
+  const [visibleHours, setVisibleHours] = useState(3);
+  const [startIndex, setStartIndex] = useState(0);
+  const [selectedHour, setSelectedHour] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +25,7 @@ function AppointmentBookingModal({
         dateToFetch.setHours(0, 0, 0, 0);
         const fetcher = new fetchAvailableHours();
         const response = await fetcher.get({ date: dateToFetch });
-        console.log(response.data);
-        setAvailableHours(response.data);
+        setAvailableHours(response.data.availableHours);
       } catch (error) {
         console.error("Błąd podczas pobierania dostępnych godzin: ", error);
       }
@@ -41,6 +43,7 @@ function AppointmentBookingModal({
     }
 
     setSelectedDate(newDate);
+    setSelectedHour(null); // Reset selected hour when changing the date
   };
 
   const getPolishDayName = (date) => {
@@ -56,6 +59,22 @@ function AppointmentBookingModal({
     const dayOfWeekIndex = date.getDay();
 
     return daysOfWeek[dayOfWeekIndex];
+  };
+
+  const handleNextHours = () => {
+    if (startIndex + visibleHours < availableHours.length) {
+      setStartIndex(startIndex + 1);
+    }
+  };
+
+  const handlePrevHours = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 1);
+    }
+  };
+
+  const handleHourClick = (hour) => {
+    setSelectedHour(hour);
   };
 
   const handleReservation = () => {
@@ -108,6 +127,36 @@ function AppointmentBookingModal({
           <i
             className="bi bi-chevron-right text-lg hover:cursor-pointer"
             onClick={() => handleDateChange("next")}
+          ></i>
+        </div>
+        <h3>Dostępne godziny:</h3>
+        <div className="available-hours flex gap-2 items-center mb-5">
+          <i
+            className="bi bi-chevron-left text-2xl hover:cursor-pointer"
+            onClick={() => handlePrevHours()}
+          ></i>
+          <ul className="flex gap-2">
+            {availableHours !== null && availableHours.length > 0 ? (
+              availableHours
+                .slice(startIndex, startIndex + visibleHours)
+                .map((hour, index) => (
+                  <li
+                    className={`border h-12 w-16 sm:h-16 sm:w-20 flex justify-center items-center sm:text-lg rounded-lg bg-slate-300 hover:bg-slate-400 hover:cursor-pointer ${
+                      selectedHour === hour ? "bg-slate-500 text-white" : ""
+                    }`}
+                    key={index}
+                    onClick={() => handleHourClick(hour)}
+                  >
+                    {hour}
+                  </li>
+                ))
+            ) : (
+              <p>Brak dostępnych godzin na wybraną datę.</p>
+            )}
+          </ul>
+          <i
+            className="bi bi-chevron-right text-2xl hover:cursor-pointer"
+            onClick={() => handleNextHours()}
           ></i>
         </div>
         <div className="summaryEvenet w-72 sm:w-96 bg-slate-300 p-4 rounded-lg">
