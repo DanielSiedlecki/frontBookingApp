@@ -22,13 +22,10 @@ function AppointmentBookingModal({
         dateToFetch.setHours(0, 0, 0, 0);
         const fetcher = new fetchAvailableHours();
         const response = await fetcher.get({ date: dateToFetch });
-
         console.log(response.data);
         setAvailableHours(response.data);
-        console.log(selectedDate.toDateString());
       } catch (error) {
         console.error("Błąd podczas pobierania dostępnych godzin: ", error);
-        console.log(selectedDate);
       }
     };
 
