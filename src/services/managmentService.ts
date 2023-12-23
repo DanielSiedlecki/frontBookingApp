@@ -8,7 +8,7 @@ class fetchAllOpenHours {
 
 class createEvent {
     post(data) {
-        return http.post("/events/create", data);
+        return http.post("/events/createEvent", data);
     }
 }
 export { fetchAllOpenHours, createEvent };
