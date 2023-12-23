@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchAvailableHours } from "../services/eventService";
+import { createEvent } from "../services/managmentService";
 
 function AppointmentBookingModal({
   closeModal,
@@ -17,21 +18,24 @@ function AppointmentBookingModal({
   const [visibleHours, setVisibleHours] = useState(3);
   const [startIndex, setStartIndex] = useState(0);
   const [selectedHour, setSelectedHour] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dateToFetch = selectedDate;
-        dateToFetch.setHours(0, 0, 0, 0);
-        const fetcher = new fetchAvailableHours();
-        const response = await fetcher.get({ date: dateToFetch });
-        setAvailableHours(response.data.availableHours);
-      } catch (error) {
-        console.error("Błąd podczas pobierania dostępnych godzin: ", error);
-      }
-    };
+  const fetchData = async () => {
+    setIsLoading(true); 
+    try {
+      const dateToFetch = new Date(selectedDate); 
+      dateToFetch.setHours(0, 0, 0, 0);
+      const fetcher = new fetchAvailableHours();
+      const response = await fetcher.get({ date: dateToFetch });
+      setAvailableHours(response.data.availableHours);
+    } catch (error) {
+      console.error("Błąd podczas pobierania dostępnych godzin: ", error);
+    }
+    setIsLoading(false); // Kończy ładowanie
+  };
 
-    fetchData();
+  fetchData();
   }, [selectedDate, setAvailableHours]);
 
   const handleDateChange = (direction) => {
@@ -91,10 +95,44 @@ function AppointmentBookingModal({
     } else {
       setEmailError(false);
     }
+    console.log(selectedEmployee)
+    console.log(selectedService)
+    submitReservation();
   };
+
+  const submitReservation = async () => {
+  if (nameError || emailError || !selectedHour) {
+    console.error("Błąd: Nie wszystkie wymagane pola zostały poprawnie wypełnione.");
+    return;
+    }
+    
+const hourParts = selectedHour.split(':');
+  const eventStartDate = new Date(selectedDate);
+  eventStartDate.setHours(parseInt(hourParts[0]), parseInt(hourParts[1]));
+
+  try {
+    const eventData = {
+      employee_id: selectedEmployee._id ,
+      eventStart: eventStartDate , 
+      serviceType: serviceInformation.serviceName,
+      fullNameReserved: name,
+      emailReserved: email,
+      cost: serviceInformation.cost,
+      duration:serviceInformation.serviceDuration
+    };
+    console.log(eventData)
+    const eventer = new createEvent()
+    await eventer.post(eventData)
+    console.log("Rezerwacja została utworzona pomyślnie.");
+  } catch (error) {
+    console.error("Błąd podczas tworzenia rezerwacji: ", error);
+  }
+};
+
 
   return (
     <div className="blur-background fixed top-0 left-0 w-full h-full backdrop-blur-md">
+      
       <div className="modal-overlay fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full lg:w-2/4 bg-white p-5 md:p-8  rounded-md shadow-lg flex flex-col items-center">
         <div className="flex flex-col justify-between items-center w-full">
           <i
@@ -130,11 +168,14 @@ function AppointmentBookingModal({
           ></i>
         </div>
         <h3>Dostępne godziny:</h3>
+        {isLoading ? (<p> Ładowanie</p>) :(
         <div className="available-hours flex gap-2 items-center mb-5">
-          <i
-            className="bi bi-chevron-left text-2xl hover:cursor-pointer"
-            onClick={() => handlePrevHours()}
-          ></i>
+           {startIndex > 0 && (
+    <i
+      className="bi bi-chevron-left text-2xl hover:cursor-pointer"
+      onClick={() => handlePrevHours()}
+    ></i>
+  )}
           <ul className="flex gap-2">
             {availableHours !== null && availableHours.length > 0 ? (
               availableHours
@@ -154,11 +195,13 @@ function AppointmentBookingModal({
               <p>Brak dostępnych godzin na wybraną datę.</p>
             )}
           </ul>
-          <i
-            className="bi bi-chevron-right text-2xl hover:cursor-pointer"
-            onClick={() => handleNextHours()}
-          ></i>
-        </div>
+           {startIndex + visibleHours < availableHours?.length && (
+    <i
+      className="bi bi-chevron-right text-2xl hover:cursor-pointer"
+      onClick={() => handleNextHours()}
+    ></i>
+  )}
+        </div> )}
         <div className="summaryEvenet w-72 sm:w-96 bg-slate-300 p-4 rounded-lg">
           <div className="eventInformation">
             <div className="serviceTitle">
@@ -170,7 +213,7 @@ function AppointmentBookingModal({
                 <p>{serviceInformation.serviceDuration}</p>
               </span>
               <span className="float-left text-sm mt-2">
-                {selectedEmployee}
+                {selectedEmployee.name}
               </span>
             </div>
           </div>
@@ -234,7 +277,8 @@ function AppointmentBookingModal({
             <label>Zarezerwuj wizytę</label>
           </button>
         </div>
-      </div>
+        </div>
+       
     </div>
   );
 }
