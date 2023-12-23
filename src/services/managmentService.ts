@@ -6,4 +6,9 @@ class fetchAllOpenHours {
     }
 }
 
-export { fetchAllOpenHours };
+class createEvent {
+    post(data) {
+        return http.post("/events/create", data);
+    }
+}
+export { fetchAllOpenHours, createEvent };
