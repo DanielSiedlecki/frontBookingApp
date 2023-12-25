@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchAvailableHours } from "../services/eventService";
+import getAvailableHours from "../utils/data_utils/getAvailableHours";
 import { createEvent } from "../services/managmentService";
-import { calculateServiceEndHour } from "../utils/serviceUtils";
+import { calculateServiceEndHour } from "../utils/calculateServiceEndHour";
+import { getPolishDayName } from "../utils/convertDate/getPolishDayName";
+import ReservationNotify from "./reservationNotify";
 
 function AppointmentBookingModal({
   closeModal,
@@ -16,21 +18,21 @@ function AppointmentBookingModal({
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [availableHours, setAvailableHours] = useState(null);
-  const [visibleHours, setVisibleHours] = useState(3);
+  const visibleHours = 3;
   const [startIndex, setStartIndex] = useState(0);
   const [selectedHour, setSelectedHour] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [reservationStatus, setReservationStatus] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const dateToFetch = new Date(selectedDate);
-        dateToFetch.setHours(0, 0, 0, 0);
-        const fetcher = new fetchAvailableHours();
-        const response = await fetcher.get({ date: dateToFetch });
-        setAvailableHours(response.data.availableHours);
-        console.log(availableHours);
+        const hours = await getAvailableHours(
+          selectedDate,
+          selectedEmployee._id
+        );
+        setAvailableHours(hours.availableHours);
       } catch (error) {
         console.error("Błąd podczas pobierania dostępnych godzin: ", error);
       }
@@ -51,21 +53,6 @@ function AppointmentBookingModal({
 
     setSelectedDate(newDate);
     setSelectedHour(null);
-  };
-
-  const getPolishDayName = (date) => {
-    const daysOfWeek = [
-      "Niedziela",
-      "Poniedziałek",
-      "Wtorek",
-      "Środa",
-      "Czwartek",
-      "Piątek",
-      "Sobota",
-    ];
-    const dayOfWeekIndex = date.getDay();
-
-    return daysOfWeek[dayOfWeekIndex];
   };
 
   const handleNextHours = () => {
@@ -129,10 +116,39 @@ function AppointmentBookingModal({
       const eventer = new createEvent();
       await eventer.post(eventData);
       console.log("Rezerwacja została utworzona pomyślnie.");
+      setReservationStatus("success");
     } catch (error) {
       console.error("Błąd podczas tworzenia rezerwacji: ", error);
+      setReservationStatus("error");
     }
   };
+
+  if (reservationStatus == "success") {
+    return (
+      <div className="blur-background fixed top-0 left-0 w-full h-full backdrop-blur-md">
+        <div className="modal-overlay fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full lg:w-2/4 bg-white p-5 md:p-8  rounded-md shadow-lg flex flex-col items-center">
+          <i
+            className="bi bi-x self-end text-4xl hover:cursor-pointer"
+            onClick={closeModal}
+          ></i>
+          <ReservationNotify type={"success"}></ReservationNotify>
+        </div>
+      </div>
+    );
+  }
+  if (reservationStatus == "error") {
+    return (
+      <div className="blur-background fixed top-0 left-0 w-full h-full backdrop-blur-md">
+        <div className="modal-overlay fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full lg:w-2/4 bg-white p-5 md:p-8  rounded-md shadow-lg flex flex-col items-center">
+          <i
+            className="bi bi-x self-end text-4xl hover:cursor-pointer"
+            onClick={closeModal}
+          ></i>
+          <ReservationNotify type={"error"}></ReservationNotify>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="blur-background fixed top-0 left-0 w-full h-full backdrop-blur-md">
@@ -160,7 +176,7 @@ function AppointmentBookingModal({
             type="date"
             id="date"
             name="date"
-            value={selectedDate.toISOString().slice(0, 10)}
+            value={selectedDate.toLocaleDateString("en-CA")}
             min={today.toISOString().slice(0, 10)}
             onChange={(e) => setSelectedDate(new Date(e.target.value))}
             required
