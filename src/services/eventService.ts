@@ -17,4 +17,14 @@ class cancelEvent {
         return http.delete(`/events/cancelEvent/${id}`)
     }
 }
-export { fetchAvailableHours, getEvent, cancelEvent }
+
+class updateEvent {
+    put(id, newEventStart) {
+
+        const requestData = {
+            newEventStart
+        };
+        return http.put(`/events/updateEvent/${id}`, requestData)
+    }
+}
+export { fetchAvailableHours, getEvent, cancelEvent, updateEvent }
