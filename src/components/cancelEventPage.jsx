@@ -8,6 +8,7 @@ function CancelEventPage() {
   const [event, setEvent] = useState(null);
   const [error, setError] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
+  const [eventId, setEventId] = useState(null);
   const [cancelled, setCancelled] = useState(false);
   const { id } = useParams();
   const [date, setDate] = useState(null);
@@ -38,6 +39,7 @@ function CancelEventPage() {
         setEvent(response.data);
         setDate(new Date(response.data.findEvent.eventStart));
         setEmployeeId(response.data.findEvent.employee_id)
+        setEventId(response.data.findEvent._id)
       } catch (err) {
         console.error(err);
         setError("Error fetching event");
@@ -105,6 +107,7 @@ function CancelEventPage() {
       <ChangeReservationModal
                 closeModal={() => setModalVisible(false)}
                 employeeID={employeeId}
+                eventID={eventId}
       />
     )}
           </div>
