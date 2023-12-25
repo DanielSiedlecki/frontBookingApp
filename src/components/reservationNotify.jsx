@@ -9,6 +9,9 @@ function ReservationNotify({ type }) {
     } else if (type === 'error') {
         message = 'Wystąpił błąd podczas tworzenia rezerwacji.';
         styleClass = 'text-red-600';
+    } else if (type === 'postpone') {
+        message = 'Termin został zmieniony';
+        styleClass = 'text-green-600';
     }
 
     return (
