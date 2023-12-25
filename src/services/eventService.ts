@@ -6,4 +6,15 @@ class fetchAvailableHours {
     }
 }
 
-export { fetchAvailableHours }
+class getEvent {
+    get(id) {
+        return http.get(`/events/getEvent/${id}`);
+    }
+}
+
+class cancelEvent {
+    delete(id) {
+        return http.delete(`/events/cancelEvent/${id}`)
+    }
+}
+export { fetchAvailableHours, getEvent, cancelEvent }
