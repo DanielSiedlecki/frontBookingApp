@@ -1,5 +1,5 @@
 import './App.css';
-import CancelEventPage from './components/cancelEvenetPage';
+import CancelEventPage from './components/cancelEventPage';
 import HomeSection from './components/homeSection';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
