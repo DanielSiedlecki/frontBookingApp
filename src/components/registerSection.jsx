@@ -109,7 +109,7 @@ function RegisterSection() {
           </div>
           <div className="w-full px-6 py-4 mt-6 overflow-hidden bg-white shadow-md sm:max-w-md sm:rounded-lg">
             <form onSubmit={handleSubmit}>
-              <div className="fullname flex gap-2">
+              <div className="fullname flex flex-col sm:flex-row gap-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Imię
@@ -205,7 +205,7 @@ function RegisterSection() {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-end mt-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 items-center justify-end mt-4">
                 <a
                   className="text-sm text-gray-600 underline hover:text-gray-900"
                   href="/login"
