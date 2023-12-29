@@ -8,4 +8,12 @@ class registerUser {
 
 }
 
-export { registerUser };
+class loginUser {
+
+    post(data) {
+        return http.post('/auth/login', data);
+    }
+
+}
+
+export { registerUser, loginUser };
