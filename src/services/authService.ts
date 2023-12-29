@@ -15,5 +15,12 @@ class loginUser {
     }
 
 }
+class requestPassword {
 
-export { registerUser, loginUser };
+    post(data) {
+        return http.post('/auth/requestPassword', data);
+    }
+
+}
+
+export { registerUser, loginUser, requestPassword };
