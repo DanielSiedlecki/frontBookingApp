@@ -1,4 +1,24 @@
+import { registerUser } from "../services/authService";
 import { useState } from "react";
+
+async function register(data) {
+  try {
+    const eventData = {
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
+      password:data.password
+    };
+    const reg = new registerUser()
+    await reg.post(eventData);
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
 function RegisterSection() {
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +48,7 @@ function RegisterSection() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isAnyFieldEmpty = false;
 
@@ -49,14 +69,22 @@ function RegisterSection() {
 
     if (isAnyFieldEmpty) {
       alert("Uzupełnij wszystkie wymagane pola");
-    } else if (formData.password != formData.password_confirmation) {
+    } else if (formData.password !== formData.password_confirmation) {
       alert("Hasła się od siebie różnią");
     } else if (formData.password.length < 6) {
       alert("Hasło jest za krótkie");
     } else {
-      console.log("Pomyślnie zarejestrowany", formData);
+      const registrationSuccessful = await register(formData);
+      console.log(formData)
+      if (registrationSuccessful) {
+        console.log("Pomyślnie zarejestrowany", formData);
+        
+      } else {
+        console.log("Błąd podczas rejestracji");
+      }
     }
   };
+
 
   return (
     <div>
