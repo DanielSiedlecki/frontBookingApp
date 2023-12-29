@@ -20,6 +20,7 @@ async function register(data) {
 }
 
 function RegisterSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -78,6 +79,7 @@ function RegisterSection() {
       console.log(formData)
       if (registrationSuccessful) {
         console.log("Pomyślnie zarejestrowany", formData);
+        setIsModalOpen(true);
         
       } else {
         console.log("Błąd podczas rejestracji");
@@ -88,6 +90,7 @@ function RegisterSection() {
 
   return (
     <div>
+      {!isModalOpen &&
       <div className="flex flex-col items-center min-h-screen pt-6 sm:justify-center sm:pt-0 bg-gray-50">
         <div>
           <a href="/">
@@ -200,7 +203,23 @@ function RegisterSection() {
             </div>
           </form>
         </div>
-      </div>
+        </div>
+      }
+      {isModalOpen && (
+        <div className="w-screen h-96 flex items-center justify-center">
+          <div className="modal-overlay justify-center items-center flex flex-col gap-2 ">
+            <i className="bi bi-check text-green-400 text-6xl"></i>
+            <p className="text-center">
+              Konto zostało utworzone
+            </p>
+            <a href="/login">
+              <button className="inline-flex items-center px-4 py-2 ml-4 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-900 border border-transparent rounded-md active:bg-gray-900">
+                Zaloguj się
+              </button>
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
