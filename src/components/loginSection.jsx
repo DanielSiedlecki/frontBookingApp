@@ -1,4 +1,26 @@
 import { useState } from "react";
+import { loginUser } from "../services/authService";
+
+async function login(data) {
+  try {
+    const eventData = {
+      email: data.email,
+      password: data.password,
+    };
+
+    const log = new loginUser();
+    const response = await log.post(eventData);
+    return { success: true, data: response.data.user };
+  } catch (err) {
+    if (err.response && err.response.status === 409) {
+      return { success: false, error: "Email is already in use" };
+    }
+
+    console.error(err);
+    return { success: false, error: "Registration failed" };
+  }
+}
+
 function LoginSection() {
   const [formData, setFormData] = useState({
     email: "",
@@ -9,8 +31,7 @@ function LoginSection() {
     email: false,
     password: false,
   });
-
-  const handleInputChange = (e) => {
+   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -21,8 +42,8 @@ function LoginSection() {
       [name]: value.trim() === "",
     });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    
     e.preventDefault();
     let isAnyFieldEmpty = false;
 
@@ -44,13 +65,17 @@ function LoginSection() {
     if (isAnyFieldEmpty) {
       alert("Uzupełnij wszystkie wymagane pola");
     } else {
-      const isAuthenticated = true;
-
-      if (isAuthenticated) {
-        console.log("Login successful!", formData);
-        history.push("/dashboard");
-      } else {
-        alert("Invalid credentials. Please try again.");
+      try {
+        const result = await login(formData);
+        if (result.success) {
+          const userId = result.data?.user?._id
+          console.log("Login successful! User ID:", userId);
+        } else {
+          alert(result.error || "Złe dane");
+        }
+      } catch (error) {
+        console.error("An error occurred during login:", error);
+        alert("An error occurred. Please try again.");
       }
     }
   };
@@ -103,7 +128,7 @@ function LoginSection() {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-end mt-4">
+            <div className="flex sm:flex-row flex-col  items-center justify-end mt-4">
               <a
                 className="text-sm text-gray-600 underline hover:text-gray-900"
                 href="/forgotpassword"
