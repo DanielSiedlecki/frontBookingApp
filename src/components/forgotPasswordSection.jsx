@@ -1,4 +1,26 @@
 import { useState } from "react";
+import { requestPassword } from "../services/authService";
+
+async function changePasswordRequest(inputEmail){
+
+  try {
+    const eventData = {
+      email: inputEmail,
+    };
+
+    const req = new requestPassword()
+    await req.post(eventData)
+
+   return { success: true };
+
+   }
+  
+  catch (error) {
+    console.log(error)
+  }
+
+}
+
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -11,7 +33,8 @@ function ForgotPassword() {
     setIsEmpty(value.trim() === "");
   };
 
-  const handleSubmit = (e) => {
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isEmpty) {
@@ -19,9 +42,19 @@ function ForgotPassword() {
     } else if (!email.includes("@")) {
       alert("Please enter a valid email address.");
     } else {
-      setIsModalOpen(true);
+      try {
+        const result = await changePasswordRequest(email);
+        if (result.success) {
+          setIsModalOpen(true);
+        } else {
+          alert(result.error);
+        }
+      } catch (error) {
+        console.error("An error occurred during password reset:", error);
+        alert("An error occurred. Please try again.");
+      }
     }
-  };
+  }
 
   return (
     <div>
