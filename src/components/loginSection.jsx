@@ -68,7 +68,7 @@ function LoginSection() {
       try {
         const result = await login(formData);
         if (result.success) {
-          const userId = result.data?.user?._id
+          const userId = result.data?._id
           console.log("Login successful! User ID:", userId);
         } else {
           alert(result.error || "Złe dane");
