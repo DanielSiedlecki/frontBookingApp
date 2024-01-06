@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-import { changePasword, requestPaswordVerify } from "../services/authService";
+import { changePassword, requestPasswordVerify } from "../services/authService";
 import Spinner from "./elements/spinner/spinner";
 
 async function passwordChanger(id, token, newPassword) {
   try {
-    const changer = new changePasword();
+    const changer = new changePassword();
     await changer.put(id, token, newPassword);
 
     return { success: true };
@@ -17,7 +16,7 @@ async function passwordChanger(id, token, newPassword) {
 
 async function urlVerify(id, token) {
   try {
-    const verify = new requestPaswordVerify();
+    const verify = new requestPasswordVerify();
     await verify.post(id, token);
     return { success: true };
   } catch (err) {
@@ -42,7 +41,7 @@ function ChangePassword() {
         const response = await urlVerify(id, token);
         if (response.success) {
           console.log("OK");
-          setIsLoading(false)
+          setIsLoading(false);
         }
       } catch (error) {
         console.error(error);
@@ -75,15 +74,17 @@ function ChangePassword() {
   };
 
   if (isLoading) {
-    return(<div className="h-screen w-screen flex items-center justify-center"><Spinner></Spinner></div>)
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <Spinner></Spinner>
+      </div>
+    );
   }
 
   return (
     <div>
-      
       {!isModalOpen && (
         <div className="flex flex-col items-center min-h-screen pt-6 sm:justify-center sm:pt-0 bg-gray-50">
-         
           <div>
             <a href="/">
               <h3 className="text-xl md:text-4xl font-bold text-purple-600">
