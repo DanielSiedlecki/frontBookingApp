@@ -1,6 +1,6 @@
 function DashboardSection() {
     
-    return(<div>test</div>)
+   return (<div className="w-screen h-screen"></div>)
 }
 
 export default DashboardSection
