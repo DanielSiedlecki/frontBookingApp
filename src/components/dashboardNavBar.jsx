@@ -1,4 +1,4 @@
-import currentTime from "../utils/data_utils/clock_currentTime";
+import { currentTime } from "../utils/data_utils/clock_currentTime";
 import { useEffect, useState } from "react";
 
 function DashboardNavBar() {
@@ -6,13 +6,11 @@ function DashboardNavBar() {
   const actualTime = actualTimeFullFormat.slice(0, -3);
     
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    setInterval(() => {
       setActualTimeFullFormat(currentTime());
     }, 1000);
 
-    return () => {
-      clearInterval(intervalId);
-    };
+    
   }, []);
 
   return (
@@ -23,19 +21,19 @@ function DashboardNavBar() {
                   <p className="text-white text-xl self-center mb-10 block lg:hidden">{actualTime}</p>
           <li>
             <span className="flex gap-2 text-white text-lg">
-              <i className="bi bi-house-fill text-4xl lg:text-lg"></i>
+              <i className="bi bi-house-fill text-2xl lg:text-lg"></i>
               <p className="hidden lg:block">Strona główna</p>
             </span>
           </li>
           <li>
             <span className="flex gap-2 text-white text-lg">
-              <i className="bi-calendar-fill  text-4xl lg:text-lg"></i>
+              <i className="bi-calendar-fill  text-2xl lg:text-lg"></i>
               <p className="hidden lg:block">Moje wizyty</p>
             </span>
           </li>
           <li>
             <span className="flex gap-2 text-white text-lg">
-              <i className="bi bi-door-closed-fill  text-4xl lg:text-lg"></i>
+              <i className="bi bi-door-closed-fill  text-xl lg:text-lg"></i>
               <p className="hidden lg:block">Wyloguj</p>
             </span>
           </li>
