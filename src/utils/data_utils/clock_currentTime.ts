@@ -1,4 +1,4 @@
-function currentTime(): string {
+export const currentTime = (): string => {
     let date = new Date();
     let hh: number | string = date.getHours();
     let mm: number | string = date.getMinutes();
@@ -10,6 +10,4 @@ function currentTime(): string {
 
     let time: string = hh + ":" + mm + ":" + ss;
     return time;
-}
-
-export default currentTime();
+};
