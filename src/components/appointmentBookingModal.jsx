@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import getAvailableHours from "../utils/data_utils/getAvailableHours";
-import { createEvent } from "../services/managmentService";
+import { createEvent } from "../services/managementService";
 import { calculateServiceEndHour } from "../utils/calculateServiceEndHour";
 import { getPolishDayName } from "../utils/convertDate/getPolishDayName";
 import ReservationNotify from "./reservationNotify";
+import convertTimeStringToTimestampUTC from "../utils/convertDate/timeToTimeStampUTC";
 
 function AppointmentBookingModal({
   closeModal,
@@ -69,11 +70,13 @@ function AppointmentBookingModal({
 
   const handleHourClick = (hour) => {
     setSelectedHour(hour);
+    console.log(hour);
   };
 
   const handleReservation = () => {
     if (!name) {
       setNameError(true);
+      return;
     } else {
       setNameError(false);
     }
@@ -82,11 +85,12 @@ function AppointmentBookingModal({
       setEmailError(true);
     } else if (!email.includes("@")) {
       setEmailError(true);
+      return;
     } else {
       setEmailError(false);
+      return;
     }
-    console.log(selectedEmployee);
-    console.log(selectedService);
+
     submitReservation();
   };
 
@@ -98,14 +102,10 @@ function AppointmentBookingModal({
       return;
     }
 
-    const hourParts = selectedHour.split(":");
-    const eventStartDate = new Date(selectedDate);
-    eventStartDate.setHours(parseInt(hourParts[0]), parseInt(hourParts[1]));
-
     try {
       const eventData = {
         employee_id: selectedEmployee._id,
-        eventStart: eventStartDate,
+        eventStart: convertTimeStringToTimestampUTC(selectedHour),
         serviceType: serviceInformation.serviceName,
         fullNameReserved: name,
         emailReserved: email,
