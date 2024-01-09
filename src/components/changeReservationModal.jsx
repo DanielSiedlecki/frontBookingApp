@@ -3,6 +3,7 @@ import { getPolishDayName } from "../utils/convertDate/getPolishDayName";
 import getAvailableHours from "../utils/data_utils/getAvailableHours";
 import { updateEvent } from "../services/eventService";
 import ReservationNotify from "./reservationNotify";
+import convertTimeStringToTimestampUTC from "../utils/convertDate/timeToTimeStampUTC";
 
 function ChangeReservationModal({ eventID, closeModal, employeeID }) {
   const today = new Date();
@@ -56,14 +57,10 @@ function ChangeReservationModal({ eventID, closeModal, employeeID }) {
   };
 
   const handleUpdateEvent = async () => {
-    const hourParts = selectedHour.split(":");
-    const eventStartDate = new Date(selectedDate);
-    eventStartDate.setHours(parseInt(hourParts[0]), parseInt(hourParts[1]));
+    const eventStartDate = convertTimeStringToTimestampUTC(selectedHour);
+
     try {
-      console.log("work", eventID, eventStartDate);
-
       const putEvent = new updateEvent();
-
       const updater = await putEvent.put(eventID, eventStartDate);
       setReservationStatus("postpone");
       console.log(updater);
