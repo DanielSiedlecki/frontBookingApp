@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "../assets/barbershopLogo.jpg";
-import { fetchAllOpenHours } from "../services/managmentService";
+import { fetchAllOpenHours } from "../services/managementService";
 
 function InformationSection() {
   const [loading, setLoading] = useState(true);
