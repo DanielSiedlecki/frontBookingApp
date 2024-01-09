@@ -7,6 +7,7 @@ function DashboardNavBar() {
   const actualTime = actualTimeFullFormat.slice(0, -3);
   const nowDate = actualDate();
   const nowDateSplitFormat = actualDate().slice(0, -5);
+  const [isAdmin, setIsAdmin] = useState(true);
   useEffect(() => {
     setInterval(() => {
       setActualTimeFullFormat(currentTime());
@@ -14,7 +15,7 @@ function DashboardNavBar() {
   }, []);
 
   return (
-    <div className="bg-black h-screen w-20 lg:w-52">
+    <div className="bg-black h-screen w-20 lg:w-52 absolute">
       <div className="navbar-overlay">
         <ul className="flex flex-col gap-5 lg:gap-3 pt-40 p-3 items-center lg:items-start">
           <span>
@@ -33,16 +34,18 @@ function DashboardNavBar() {
           </span>
           <li>
             <span className="flex gap-2 text-white text-lg">
-              <i className="bi bi-house-fill text-2xl lg:text-lg"></i>
-              <p className="hidden lg:block">Strona główna</p>
-            </span>
-          </li>
-          <li>
-            <span className="flex gap-2 text-white text-lg">
               <i className="bi-calendar-fill  text-2xl lg:text-lg"></i>
-              <p className="hidden lg:block">Moje wizyty</p>
+              <p className="hidden lg:block">Wizyty</p>
             </span>
           </li>
+          {isAdmin && (
+            <li>
+              <span className="flex gap-2 text-white text-lg">
+                <i className="bi-gear-fill  text-2xl lg:text-lg"></i>
+                <p className="hidden lg:block">Panel zarządzania</p>
+              </span>
+            </li>
+          )}
           <li>
             <span className="flex gap-2 text-white text-lg">
               <i className="bi bi-door-closed-fill  text-xl lg:text-lg"></i>
