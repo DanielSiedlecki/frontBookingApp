@@ -13,8 +13,8 @@ class getEvent {
 }
 
 class cancelEvent {
-    delete(id) {
-        return http.delete(`/events/cancelEvent/${id}`);
+    put(id) {
+        return http.put(`/events/cancelEvent/${id}`);
     }
 }
 
@@ -24,6 +24,13 @@ class updateEvent {
             newEventStart,
         };
         return http.put(`/events/updateEvent/${id}`, requestData);
+    }
+}
+
+class endedEvent {
+    put(id) {
+
+        return http.put(`/events/endedEvent/${id}`);
     }
 }
 
@@ -38,4 +45,5 @@ export {
     cancelEvent,
     updateEvent,
     getAllEvents,
+    endedEvent
 };
