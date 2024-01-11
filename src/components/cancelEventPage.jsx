@@ -18,7 +18,7 @@ function CancelEventPage() {
     console.log("work");
     try {
       const canceler = new cancelEvent();
-      const cancelEventer = await canceler.delete(id);
+      const cancelEventer = await canceler.put(id);
       setCancelled(true);
       console.log(cancelEventer);
     } catch (err) {
@@ -38,8 +38,8 @@ function CancelEventPage() {
         const response = await fetcher.get(id);
         setEvent(response.data);
         setDate(new Date(response.data.findEvent.eventStart));
-        setEmployeeId(response.data.findEvent.employee_id)
-        setEventId(response.data.findEvent._id)
+        setEmployeeId(response.data.findEvent.employee);
+        setEventId(response.data.findEvent._id);
       } catch (err) {
         console.error(err);
         setError("Error fetching event");
@@ -89,7 +89,9 @@ function CancelEventPage() {
                 <span className="flex gap-3 w-1/2 flex-col md:flex-row">
                   <button
                     className="w-full md:w-1/2 self-center text-white bg-green-400 hover:bg-green-500 "
-                    onClick={() => {setModalVisible(true)}}
+                    onClick={() => {
+                      setModalVisible(true);
+                    }}
                   >
                     Zmień termin
                   </button>
@@ -104,12 +106,12 @@ function CancelEventPage() {
             )}
 
             {isModalVisible && (
-      <ChangeReservationModal
+              <ChangeReservationModal
                 closeModal={() => setModalVisible(false)}
                 employeeID={employeeId}
                 eventID={eventId}
-      />
-    )}
+              />
+            )}
           </div>
         </>
       )}
