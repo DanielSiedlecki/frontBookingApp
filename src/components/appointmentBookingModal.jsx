@@ -88,7 +88,6 @@ function AppointmentBookingModal({
       return;
     } else {
       setEmailError(false);
-      return;
     }
 
     submitReservation();
